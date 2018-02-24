@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.13.0/d3.js"></script>
+		<link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+		<title>Development Progress for Find postgraduate teacher training</title>
+		 <style type="text/css">
+			 body {
+				font-family: 'Montserrat', sans-serif;
+			 	 
+			 }
+			 
+			 h1, h2, h3, p {
+				margin-left:15px;
+			 }
+			 
+			 h1 {
+				font-size: 3em;
+				margin-bottom: 10px;
+			 }
+			 h2 {
+				margin-top:40px;
+			 }
+			 h3 {			 
+				font-size: 17px;
+				color: orangered;
+			 }
+			 
+			 .foo {
+				width: 400px;
+				height: 180px;
+				float:left;
+				margin-bottom:100px;
+			 }
+			 
+			 .container {
+				position:relative;
+			}
+			.container:after {
+				content:"";
+				clear:both;
+				display:table;
+			}
+			 
+			 .foo p {
+				height: 40px;
+
+			 }
+			 
+			 a, a:visited {
+				color: orangered;
+				font-weight:bold;
+			 }
+		 </style>
+	</head>
+	<body>	
+		<h1>
+			Development progress for
+			<span style="font-style:italic">Find postgraduate teacher training</span>
+		</h1>
+		<p>
+			See the latest version in action at <a href="http://bit.ly/find-teacher-training">bit.ly/find-teacher-training</a>
+		</p>
+		
+		<script type="application/javascript">
+			var width = 1000, height = 1000
+			
+			var divC = d3.select("body").selectAll("div").data([
+				{title: "User needs", items:[
+					{
+						name: "Search by location",
+						desc: "Find training that gives you a managable commute from where you (want to) live",
+						done: 0.5,
+						design: 0.3
+					},
+					{
+						name: "Search by subject",
+						desc: "Find courses for your prefered subject(s), and get recommendations if you're not sure",
+						done: 0.4,
+						design: 0.6
+					},
+					{
+						name: "Proceed to apply",
+						desc: "When you found a course you like, learn how to apply to it",
+						done: 0.2,
+						design: 0.2
+					},
+					{
+						name: "Find a specific programme",
+						desc: "Get details for a specific course or provider you know",
+						done: 0.0,
+						design: 0.5
+					},
+					{
+						name: "Choose your qualification",
+						desc: "Understand if you want a PGCE, and filter to relevant courses",
+						done: 0.0,
+						design: 0.0
+					},
+					{
+						name: "Find a course you can afford",
+						desc: "If you need or want financial help, see what's available and the courses that offer it",
+						done: 0.55,
+						design: 0.55
+					},
+					{
+						name: "See if a course is \"good\"",
+						desc: "Choose the best course you can get by comparing how well they do for their trainees",
+						done: 0.0,
+						design: 0.0
+					},
+					{
+						name: "Match your interests",
+						desc: "Choose by learning styles, school types, and learning contents",
+						done: 0.0,
+						design: 0.0
+					}
+				]},
+				{title: "Internal needs", items:[
+					{
+						name: "Easy hosting",
+						desc: "Keep the lights on with minimum effort: stable platform, good monitoring, automation",
+						done: 0.4
+					},
+					{
+						name: "Reusable components",
+						desc: "Make things that could be useful for other teams easy to access, eg. via APIs",
+						done: 0.6
+					},
+					{
+						name: "Fast development",
+						desc: "Have a dev environment that enables devs to code without distractions",
+						done: 1.0
+					},
+					{
+						name: "Good citizen",
+						desc: "Use open standards, address Accessibility/AD needs, enable sustained iteration",
+						done: 0.8
+					},
+				]}
+			])
+				.enter().append("div")
+					.attr("class", "container");
+					
+			divC.append("h2")
+				.text(d=>d.title);
+			var div = divC.selectAll("div")
+				.data(d => d.items)
+				.enter()
+				.append("div")
+				.attr("class", "foo");
+				
+			div.append("h3")
+				.text((d,i) => (i+1) + ". " + d.name);
+			div.append("p")
+				.text(d => d.desc);
+		
+			var svg = div.append("svg")
+				.attr("width", "400px")
+				.attr("height", "90px")
+			
+			var g = svg.append("g");
+				
+				g.append("rect")
+					.attr("y", 0)
+					.attr("width", 400-40)
+					.attr("height", 60)
+					.attr("stroke", "#aaa")
+					.attr("stroke-width", "3px")
+					//.attr("stroke-linejoin", "bevel")	
+					.style("fill", "none")
+					.style("transform", "matrix(1,0,-0.4,1,12,0)");
+				
+				var innerHeight = 40;
+				var innerWidth= (400-40 - 20);
+				
+				g.append("rect")
+					.attr("width", innerWidth)
+					.attr("height", innerHeight)
+					.attr("x", 10)
+					.attr("y", 10)
+					.attr("fill", "#dedede")
+					.style("transform", "matrix(1,0,-0.4,1,12,0)");
+					
+				g.append("rect")
+					.attr("width",0)					
+					.attr("height", innerHeight)
+					.attr("x", 10)
+					.attr("y", 10)
+					.attr("fill", "#aaa")
+					.style("transform", "matrix(1,0,-0.4,1,12,0)")
+					.transition()
+						.attr("width", d => innerWidth * d.done)
+						.delay((d,i) => 100 + i*50)
+						.duration(350);
+					//.style("transform", "skew(-"+skewDeg+"deg)");
+				
+				var skewDeg = 25;
+				var skewWidth = innerHeight * Math.tan(skewDeg * Math.PI/180);
+				
+				g.filter(d => d.design !== null && d.design !== undefined)
+					.append("line")
+					.attr("x1", d=> 10 + innerWidth * d.design)
+					.attr("x2", d=> 10 + innerWidth * d.design)
+					.attr("y1", 0)
+					.attr("y2", 60)
+					.attr("stroke", "black")
+					.attr("stroke-width", "2px")
+					.attr("stroke-dasharray", "5px 5px")
+					.attr("stroke-dashoffset", "3px ");
+					
+				g.filter(d => d.design !== null && d.design !== undefined)
+					.append("text")
+					.text("DESIGN")
+					.attr("x", d => innerWidth* d.design - 10)
+					.attr("y", 80);
+					
+				g.style("transform", "matrix(1,0,0,1,20,5)");
+			
+					
+				
+		</script>
+	</body>
+	
+</html>
